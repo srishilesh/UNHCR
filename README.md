@@ -1,2 +1,2 @@
-Understanding relationships between cimate anomalies, local conflicts
+Understanding relationships between climate anomalies, local conflicts
 and population displacements in Somalia.
