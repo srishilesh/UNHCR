@@ -17,7 +17,9 @@ tar zxvf LC081650592017031001T1-SC20190902133955.tar.gz  -C DIRECTORY )
 4) You can now execute the load_image.py script, with the following parameters:
 
 	home directory: The directory where you have unzipped your original file
+
 	stacked_image_destination: During the execution of the script, a file with this name will be generated
+
 	type of image generated: Currently, this script can generate three types of images.
 	
 		1 - Natural Color
