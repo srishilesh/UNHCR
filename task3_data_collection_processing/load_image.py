@@ -35,9 +35,19 @@ class Bands_to_RGB:
                 number = channel_name.replace("band", "")
                 image_dict[number] = filename_path
                 
+            for filename_path in glob.glob(directory + '*B*.TIF'): 
+                if 'QA' not in filename_path:
+                    image_list.append(filename_path)
+                    filename = ntpath.basename(filename_path)            
+                    channel_name = filename.split(".")[0].split('_')[7]
+                    number = channel_name.replace("B", "")
+                    image_dict[int(number)] = filename_path
+             
+                
             new_image_list = []
             for key in sorted(image_dict.keys()) :
                 new_image_list.append(image_dict[key])
+                
                 
             return new_image_list
         
@@ -46,34 +56,50 @@ class Bands_to_RGB:
             Generates stacked image from all bands
             void
             '''
-            
-            stack_data, metadata = es.stack(paths_list, HOME_DIR + stacked_file_output)
+
+            stack_data, metadata = es.stack(paths_list[:7] , HOME_DIR + stacked_file_output)
          
-        def create_rgb_plots(self, HOME_DIR, plot_to_generate,stacked_file_output):
+        def create_rgb_plots(self, HOME_DIR, plot_to_generate, stacked_file_output):
             with rio.open(HOME_DIR + stacked_file_output) as src:
                 write_operation = src.read()                
                 
-                if plot_to_generate=='1':
+                if plot_to_generate == '1':
                     plot_rgb(write_operation,
                             rgb=[3, 2, 1],
                 title="Natural Color", dest_file=HOME_DIR + "rgb_image_natural_color")
 
-                if plot_to_generate=='2':
+                if plot_to_generate == '2':
                     plot_rgb(write_operation,
                             rgb=[4, 3, 2],
                 title="Color Infrared (vegetation)", dest_file=HOME_DIR + "rgb_image_infrared")
         
-                if plot_to_generate=='3':
+                if plot_to_generate == '3':
                     plot_rgb(write_operation,
                             rgb=[5, 4, 3],
                 title="Vegetation Analysis", dest_file=HOME_DIR + "_" + "rgb_image_vegitation")
             
+                if plot_to_generate == '4':
+                    '''
+                    ndvi calculation, empty cells or nodata cells are reported as 0
+                    '''
+                    red = write_operation[3]
+                    nir = write_operation[4]
 
+                    np.seterr(divide='ignore', invalid='ignore')
+                    ndvi = (nir.astype(float) - red.astype(float)) / (nir + red)
+                    
 
-# Normalize bands into 0.0 - 1.0 scale
-def normalize(array):
-    array_min, array_max = array.min(), array.max()
-    return ((array - array_min) / (array_max - array_min))
+                    ndviImage = rio.open(HOME_DIR + 'ndviImage.tiff', 'w', driver='Gtiff',
+                          width=src.width,
+                          height=src.height,
+                          count=1, crs=src.crs,
+                          transform=src.transform,
+                          dtype='float64',
+                          )
+                    ndviImage.write(ndvi, 1)
+                    ndviImage.close()
+                    plt.imsave(HOME_DIR + 'ndvi_cmap.png', ndvi, cmap='Greens')
+                    plt.close
 
 def plot_rgb(
     arr,
@@ -141,4 +167,4 @@ args = parser.parse_args()
 bands_to_rgb = Bands_to_RGB() 
 paths_list = bands_to_rgb.load_bands_list(args.homeDir)
 bands_to_rgb.create_stacked_image(args.homeDir, args.stckof, paths_list)
-bands_to_rgb.create_rgb_plots(args.homeDir,args.ptg,args.stckof)
+bands_to_rgb.create_rgb_plots(args.homeDir, args.ptg, args.stckof)

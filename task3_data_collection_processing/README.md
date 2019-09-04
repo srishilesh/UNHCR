@@ -19,9 +19,15 @@ tar zxvf LC081650592017031001T1-SC20190902133955.tar.gz  -C DIRECTORY )
 	home directory: The directory where you have unzipped your original file
 	stacked_image_destination: During the execution of the script, a file with this name will be generated
 	type of image generated: Currently, this script can generate three types of images.
+	
 		1 - Natural Color
+	
 		2 - Color Infrared (vegetation)
+
 		3 - Vegetation Analysis
+
+		4 - NDVI image
+
 	Refer to 
 	https://www.esri.com/arcgis-blog/products/product/imagery/band-combinations-for-landsat-8/?rmedium=redirect&rsource=blogs.esri.com/esri/arcgis/2013/07/24/band-combinations-for-landsat-8
 	for more information
