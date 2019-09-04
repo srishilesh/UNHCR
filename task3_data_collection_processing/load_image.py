@@ -82,12 +82,16 @@ class Bands_to_RGB:
                     '''
                     ndvi calculation, empty cells or nodata cells are reported as 0
                     '''
-                    red = write_operation[3]
-                    nir = write_operation[4]
+                    red = normalize(write_operation[3])
+                    nir = normalize(write_operation[4])
 
                     np.seterr(divide='ignore', invalid='ignore')
-                    ndvi = (nir.astype(float) - red.astype(float)) / (nir + red)
+                    ndvi = np.empty(src.shape, dtype=rio.float64)
                     
+                    ndvi = np.where(
+                        (nir + red) == 0.,
+                        0,
+                        (nir - red) / (nir + red))
 
                     ndviImage = rio.open(HOME_DIR + 'ndviImage.tiff', 'w', driver='Gtiff',
                           width=src.width,
@@ -100,6 +104,12 @@ class Bands_to_RGB:
                     ndviImage.close()
                     plt.imsave(HOME_DIR + 'ndvi_cmap.png', ndvi, cmap='Greens')
                     plt.close
+
+
+def normalize(array):
+    array_min, array_max = array.min(), array.max()
+    return ((array - array_min) / (array_max - array_min))
+
 
 def plot_rgb(
     arr,
