@@ -9,6 +9,14 @@ to process 7 single band images, into a stacked RGB representation of the images
 
 1) Load the .gz of an image from your order list at EarthExplorer (or alternatively, get a gz 
 from the "original_images" folder)
+
+*IMPORTANT NOTE* : Tested with tar files with the following name formats:
+
+```
+LC081...-SC....tar.gz
+LC08_..._01_T1.tar.gz
+```
+
 2) Put the gz file into a directory. Each gz file needs to be in a different directory!
 3) Untar the file (for Linux users, here is an example: 
 ```
