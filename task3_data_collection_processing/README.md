@@ -37,6 +37,22 @@ tar zxvf LC081650592017031001T1-SC20190902133955.tar.gz  -C DIRECTORY )
 		3 - Vegetation Analysis
 
 		4 - NDVI image
+		
+		5 - False Color Urban 
+
+		6 - Agriculture
+
+		7 - Atmospheric Penetration
+
+		8 - Healthy Vegitation
+
+		9 - Land Water
+
+		10 - Atmospheric Removal
+
+		11 - Short wave infrared
+
+		all - All (DONT USE IF YOUR MACHINE DOESN'T HAVE A LOT OF MEMORY!! )
 
 	Refer to 
 	https://www.esri.com/arcgis-blog/products/product/imagery/band-combinations-for-landsat-8/?rmedium=redirect&rsource=blogs.esri.com/esri/arcgis/2013/07/24/band-combinations-for-landsat-8
