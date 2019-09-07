@@ -126,9 +126,30 @@ class Bands_to_RGB:
                             title="Healthy Vegitation", dest_file=HOME_DIR + "rgb_image_healthy_vegetation")
  
                 if plot_to_generate == '9' or plot_to_generate == 'all':
-                        plot_rgb(write_operation,
-                            rgb=[4, 5, 3],
-                            title="Land Water", dest_file=HOME_DIR + "rgb_image_land_water")
+                    '''
+                    ndwi calculation, empty cells or nodata cells are reported as 0
+                    '''
+                    green = normalize(write_operation[2])
+                    swir = normalize(write_operation[5])
+
+                    np.seterr(divide='ignore', invalid='ignore')
+                    ndvi = np.empty(src.shape, dtype=rio.float64)
+                    
+                    ndwi = np.where(
+                        (swir + green) == 0.,
+                        0,
+                        (green - swir) / (green + swir))
+                    ndwiImage = rio.open(HOME_DIR + 'ndwiImage.tiff', 'w', driver='Gtiff',
+                          width=src.width,
+                          height=src.height,
+                          count=1, crs=src.crs,
+                          transform=src.transform,
+                          dtype='float64',
+                          )
+                    ndwiImage.write(ndwi, 1)
+                    ndwiImage.close()
+                    plt.imsave(HOME_DIR + 'ndwi_cmap.png', ndwi, cmap="Blues")
+                    plt.close
       
                 if plot_to_generate == '10' or plot_to_generate == 'all':
                         plot_rgb(write_operation,
